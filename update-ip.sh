@@ -46,6 +46,7 @@ if [ "$MY_IP" != "$MY_OLD_IP" ]; then
 
     # update the DNS zone with this IP
     az network dns record-set a add-record --ipv4-address $MY_IP --record-set-name *.${REQUESTED_NAME} --resource-group $AZ_DNS_RG --zone-name $PARENT_DOMAIN --subscription $SUBSCRIPTION
+    az network dns record-set a add-record --ipv4-address $MY_IP --record-set-name ${REQUESTED_NAME} --resource-group $AZ_DNS_RG --zone-name $PARENT_DOMAIN --subscription $SUBSCRIPTION
     az network dns record-set a update --set ttl=60 --name *.${REQUESTED_NAME} --resource-group $AZ_DNS_RG --zone-name $PARENT_DOMAIN --subscription $SUBSCRIPTION
     az network dns record-set a update --set ttl=60 --name ${REQUESTED_NAME} --resource-group $AZ_DNS_RG --zone-name $PARENT_DOMAIN --subscription $SUBSCRIPTION
 
@@ -55,4 +56,5 @@ else
     echo "IPs are the same: no action"
     echo "IPs are the same: no action" >> ${DIR}/updatelog.txt
 fi
+
 

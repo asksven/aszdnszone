@@ -4,6 +4,6 @@ export tenant="***************************"
 
 export SUBSCRIPTION="********************************"
 
-REQUESTED_NAME="<your-server-name>"
-AZ_DNS_RG="<your-dons-zone-resource-group>"
-PARENT_DOMAIN="<the-parent-domin-of-your-resource-group>"
+export REQUESTED_NAME="<your-server-name>"
+export AZ_DNS_RG="<your-dons-zone-resource-group>"
+export PARENT_DOMAIN="<the-parent-domin-of-your-resource-group>"
