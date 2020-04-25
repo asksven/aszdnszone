@@ -1,9 +1,10 @@
+# The SPN info goes here
 export appId"="xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 export password="**************************"
 export tenant="***************************"
-
+# You Azure subscription
 export SUBSCRIPTION="********************************"
 
-export REQUESTED_NAME="<your-server-name>"
-export AZ_DNS_RG="<your-dons-zone-resource-group>"
-export PARENT_DOMAIN="<the-parent-domin-of-your-resource-group>"
+export REQUESTED_NAME="<your-server-name>" # this can be empty (if you want to update name.tld and *.name.tld) of be set "value" to update value.name.tld and *.value.name.tld)
+export AZ_DNS_RG="<your-dns-zone-resource-group>"
+export PARENT_DOMAIN="<the-parent-domain-of-your-resource-group>" # name.tld 
