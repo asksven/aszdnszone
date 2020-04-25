@@ -1,0 +1,9 @@
+export appId"="xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+export password="**************************"
+export tenant="***************************"
+
+export SUBSCRIPTION="********************************"
+
+REQUESTED_NAME="<your-server-name>"
+AZ_DNS_RG="<your-dons-zone-resource-group>"
+PARENT_DOMAIN="<the-parent-domin-of-your-resource-group>"
