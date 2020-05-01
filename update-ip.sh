@@ -36,6 +36,12 @@ if [ $? != 0 ]; then
 fi  
 
 MY_IP=$(curl -s http://whatismijnip.nl |cut -d " " -f 5)
+
+if [ "$MY_IP" == "" ]; then
+    echo "`date +%F_%R` : IP $MY_IP was empty" >> ${DIR}/updatelog.txt
+    exit 1
+fi	
+
 MY_OLD_IP=$(cat $IP_FILE)
 
 if [ "$MY_IP" != "$MY_OLD_IP" ]; then
@@ -56,14 +62,16 @@ if [ "$MY_IP" != "$MY_OLD_IP" ]; then
       az network dns record-set a add-record --ipv4-address $MY_IP --record-set-name "*" --resource-group $AZ_DNS_RG --zone-name $PARENT_DOMAIN --subscription $SUBSCRIPTION
       az network dns record-set a add-record --ipv4-address $MY_IP --record-set-name "@" --resource-group $AZ_DNS_RG --zone-name $PARENT_DOMAIN --subscription $SUBSCRIPTION
       az network dns record-set a update --set ttl=60 --name "*" --resource-group $AZ_DNS_RG --zone-name $PARENT_DOMAIN --subscription $SUBSCRIPTION
-      az network dns record-set a update --set ttl=60 --name "@" --resource-group $AZ_DNS_RG --zone-name $PARENT_DOMAIN --subscription $SUBSCRIPTION
+      az network dns record-set a update --set ttl=60 --name "@" --resource-group $AZ_DNS_RG --zone-name $PARENT_DOMAIN --subscription $SUBSCRIPTION      
     fi
 
     echo $MY_IP > $IP_FILE
-    echo "`date +%F_%R` : Updated to IP $MY_IP" >> ${DIR}/updatelog.txt
+    echo "`date +%F_%R` : Updated from $MY_OLD_IP to IP $MY_IP" >> ${DIR}/updatelog.txt
 else
     echo "IPs are the same: no action"
-    echo "IPs are the same: no action" >> ${DIR}/updatelog.txt
+    if [ "$DEBUG" != 0 ]; then
+	# more logging    
+        echo "`date +%F_%R` : IPs are the same: no action" >> ${DIR}/updatelog.txt
+    fi	
 fi
-
 
