@@ -4,7 +4,6 @@ export tenant="***************************"
 
 export SUBSCRIPTION="********************************"
 
-export REQUESTED_NAME="<your-server-name>"
-export AZ_DNS_RG="<your-dons-zone-resource-group>"
-export PARENT_DOMAIN="<the-parent-domin-of-your-resource-group>"
-export DEBUG=1 # 1 is more verbose logging
+REQUESTED_NAMES=("<your-server-names-space-separated>") # e.g. ("home.foo.bar" "lab.foo.bar")
+AZ_DNS_RG="<your-dons-zone-resource-group>"
+PARENT_DOMAIN="<the-parent-domin-of-your-resource-group>"

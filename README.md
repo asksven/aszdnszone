@@ -14,10 +14,6 @@ The config of the `update-ip.sh` script is in `setenv` (can be created based on 
 
 When the script runs it stores the last IP it has detected in `tmp/my_ip`. In order to avoid bombarding the Azure api calls are only made if that file does not exist or if the IP is different.
 
-### Options
-
-Setting `DEBUG` to `1` in `setenv` will add more verbose logging
-
 ## Automation
 
 1. Run `crontab -e`
