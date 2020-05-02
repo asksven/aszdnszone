@@ -10,10 +10,24 @@ In order to have this script to work you will need:
 
 ## Config
 
-The config of the `update-ip.sh` script is in `setenv` (can be created based on the `setenv.template`)
+The default config of the `update-ip.sh` script is in `setenv` (can be created based on the `setenv.template`). If you want to run multiple instances with multiple configs it is also possible to pass the name of the config-file: `update-ip.sh <config-file>`.
 
-When the script runs it stores the last IP it has detected in `tmp/my_ip`. In order to avoid bombarding the Azure api calls are only made if that file does not exist or if the IP is different.
+When the script runs it stores the last IP it has detected in `tmp/my_ip`. The name of the file can be overridden by setting `IP_FILE` in the config-file. In order to avoid bombarding the Azure api calls are only made if that file does not exist or if the IP is different.
 
+### Scenario 1: update only one domain
+
+If you want to update the IP for one domain (e.g. `foo.bar`) the config-file should have:
+
+- `REQUESTED_NAMES=("")`
+- `PARENT_DOMAIN="foo.bar"`
+
+### Scenario 2: update multiple FQDNs in the domain
+
+If you want to update the IP for multiple FQDNs, e.g. `home.foo.bar` and `lab.home.foo.bar` the config-file should have:
+
+- `REQUESTED_NAMES=("home" "lab.home")`
+- `PARENT_DOMAIN="foo.bar"`
+ 
 ## Automation
 
 1. Run `crontab -e`

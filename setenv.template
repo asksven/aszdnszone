@@ -4,6 +4,9 @@ export tenant="***************************"
 
 export SUBSCRIPTION="********************************"
 
-REQUESTED_NAMES=("<your-server-names-space-separated>") # e.g. ("home.foo.bar" "lab.foo.bar")
-AZ_DNS_RG="<your-dons-zone-resource-group>"
-PARENT_DOMAIN="<the-parent-domin-of-your-resource-group>"
+export REQUESTED_NAMES=("<your-server-names-space-separated>") # e.g. ("home.foo.bar" "lab.foo.bar")
+export AZ_DNS_RG="<your-dons-zone-resource-group>"
+export PARENT_DOMAIN="<the-parent-domin-of-your-resource-group>"
+
+export IP_FILE="/tmp/my-ip" # can be left empty or set to another filename
+export TESTING=0 # can be set to 1 to simulate
