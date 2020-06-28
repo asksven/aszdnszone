@@ -4,7 +4,7 @@ metadata:
   name: update-ip
 spec:
   schedule: "* * * * *"
-  successfulJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3  
   jobTemplate:
     spec:
@@ -12,7 +12,7 @@ spec:
         spec:
           containers:
           - name: azdnszone
-            image: asksven/azdnszone:4
+            image: asksven/azdnszone:6
             command: ["/update-ip.sh"]
             envFrom:
             - configMapRef:

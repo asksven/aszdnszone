@@ -134,7 +134,7 @@ if [ "$MY_IP" != "$MY_OLD_IP" ]; then
       fi	
     fi
 
-    if [ "$STATELESS" == "1"  ]; then
+    if [ "$STATELESS" != "1"  ]; then
         echo $MY_IP > $IP_FILE
         echo "`date +%F_%R` : Updated to IP $MY_IP" >&1
     fi    

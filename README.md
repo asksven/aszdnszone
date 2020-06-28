@@ -52,13 +52,16 @@ docker run -v $PWD:/config asksven/azdnszone:1 /bin/bash -c "/update-ip.sh confi
 
 ## Build container
 
-Unfortuantely at this time (2020-06-27) there is no multi-arch azure-cli docker image available, so I decided to build one, based on the multi-arch Python image. The image containes the azure-cli v2.8.0 and can be pulled at `asksven/azdnszone:1`
+Unfortuantely at this time (2020-06-27) there is no multi-arch azure-cli docker image available, so I decided to build one. The image containes the azure-cli v2.8.0 and can be pulled at `asksven/az-cli:1`. The repo is [here](https://github.com/asksven/azure-cli)
 
+To build the azdnszone image based on the cli:
 ```
-export REPOSITORY=asksven/azdnszone
-export VERSION=1
-export DOCKER_CLI_EXPERIMENTAL=enabled
-docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+{
+    export REPOSITORY=asksven/azdnszone
+    export VERSION=1
+    export DOCKER_CLI_EXPERIMENTAL=enabled
+    docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+}
 
 make
 ```
