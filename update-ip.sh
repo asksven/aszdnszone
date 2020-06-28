@@ -72,7 +72,7 @@ fi
 MY_IP=$(curl -s http://whatismijnip.nl |cut -d " " -f 5)
 echo "`date +%F_%R` : Current IP is $MY_IP" >&1
 
-NAMES=$(echo "$REQUESTED_NAMES" | tr ':' '\n')
+readarray -td, NAMES <<<"$REQUESTED_NAMES,"; unset 'NAMES[-1]'
 
 # if STATELESS we use DNS to get the current stored (old) IP
 # otherwise we use the state-file
@@ -87,7 +87,7 @@ else
       MY_OLD_IP=""
     fi
 fi
-echo "`date +%F_%R` : Old IP is $MY_OLD_IP" >&1   
+echo "`date +%F_%R` : Old IP for ${NAMES[0]} is $MY_OLD_IP" >&1   
 
 if [ "$MY_IP" == "" ]; then
     echo "`date +%F_%R` : IP was empty. Aborting" >&2
@@ -109,6 +109,7 @@ if [ "$MY_IP" != "$MY_OLD_IP" ]; then
     if [ "$REQUESTED_NAME" != "" ]; then
       echo "`date +%F_%R` : updating *.${REQUESTED_NAME} and ${REQUESTED_NAME} with new IP $MY_IP" >&1
       if [ "$TESTING" != "1" ]; then
+        set -e
         az network dns record-set a delete --name *.${REQUESTED_NAME} --resource-group $AZ_DNS_RG --zone-name $PARENT_DOMAIN --subscription $SUBSCRIPTION --yes
         az network dns record-set a delete --name ${REQUESTED_NAME} --resource-group $AZ_DNS_RG --zone-name $PARENT_DOMAIN --subscription $SUBSCRIPTION --yes
         # update the DNS zone with this IP
@@ -116,10 +117,12 @@ if [ "$MY_IP" != "$MY_OLD_IP" ]; then
         az network dns record-set a add-record --ipv4-address $MY_IP --record-set-name ${REQUESTED_NAME} --resource-group $AZ_DNS_RG --zone-name $PARENT_DOMAIN --subscription $SUBSCRIPTION
         az network dns record-set a update --set ttl=60 --name *.${REQUESTED_NAME} --resource-group $AZ_DNS_RG --zone-name $PARENT_DOMAIN --subscription $SUBSCRIPTION
         az network dns record-set a update --set ttl=60 --name ${REQUESTED_NAME} --resource-group $AZ_DNS_RG --zone-name $PARENT_DOMAIN --subscription $SUBSCRIPTION
+        set +e
       fi	
     else
       echo "`date +%F_%R` : updating '*' and '@' with new IP $MY_IP" >&1
       if [ "$TESTING" != "1" ]; then
+        set -e
         az network dns record-set a delete --name "*" --resource-group $AZ_DNS_RG --zone-name $PARENT_DOMAIN --subscription $SUBSCRIPTION --yes
         az network dns record-set a delete --name "@" --resource-group $AZ_DNS_RG --zone-name $PARENT_DOMAIN --subscription $SUBSCRIPTION --yes
         # update the DNS zone with this IP
@@ -127,6 +130,7 @@ if [ "$MY_IP" != "$MY_OLD_IP" ]; then
         az network dns record-set a add-record --ipv4-address $MY_IP --record-set-name "@" --resource-group $AZ_DNS_RG --zone-name $PARENT_DOMAIN --subscription $SUBSCRIPTION
         az network dns record-set a update --set ttl=60 --name "*" --resource-group $AZ_DNS_RG --zone-name $PARENT_DOMAIN --subscription $SUBSCRIPTION
         az network dns record-set a update --set ttl=60 --name "@" --resource-group $AZ_DNS_RG --zone-name $PARENT_DOMAIN --subscription $SUBSCRIPTION
+        set +e
       fi	
     fi
 

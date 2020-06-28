@@ -9,10 +9,15 @@ In order to have this script to work you will need:
 - the SPN must have the role "DNS Zone Contributor" on the DNS zone
 
 
-## Changes
+## Migrate from earlier versions
 
-- 2020-06-28: the variable `REQUESTED_NAMES` in now a comma-separated string
- 
+### 2020-06-28
+
+- The variable `REQUESTED_NAMES` in now a comma-separated string
+- The variable `INITIALIZED` (default is unset, that is compatible with the previous behavior) was added to prevent the script from settings its variables using `setenv`; this is useful when running in a container where the env-vars are set by e.g. a configmap
+- The variable `STATELESS` (default is unset, that is compatible with the previous behavior) was added to avoid writing/reading "old" to/from a file. When set to `1` the current (old) IP is retrieved by doing a DNS query
+- The variable `TWELVE_FACTORS` (default is unset, that is compatible with the previous behavior) was added to ensure that all logging happens on stdout and stderr. When set to `1` the behavior is such that all logs are passed to the container orchestrator
+
 ## Config
 
 The default config of the `update-ip.sh` script is in `setenv` (can be created based on the `setenv.template`). If you want to run multiple instances with multiple configs it is also possible to pass the name of the config-file: `update-ip.sh <config-file>`.
