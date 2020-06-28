@@ -1,0 +1,20 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: update-ip
+spec:
+  schedule: "* * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3  
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: azdnszone
+            image: asksven/azdnszone:4
+            command: ["/update-ip.sh"]
+            envFrom:
+            - configMapRef:
+                name: azdnszone-config
+          restartPolicy: Never

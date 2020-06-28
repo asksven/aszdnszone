@@ -1,10 +1,11 @@
+export INITIALIZED=0
 export appId"="xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 export password="**************************"
 export tenant="***************************"
 
 export SUBSCRIPTION="********************************"
 
-export REQUESTED_NAMES=("<your-server-names-space-separated>") # e.g. ("home.foo.bar" "lab.foo.bar")
+export REQUESTED_NAMES="<your-server-names-comma-separated>") # e.g. "home.foo.bar,lab.foo.bar"
 export AZ_DNS_RG="<your-dons-zone-resource-group>"
 export PARENT_DOMAIN="<the-parent-domin-of-your-resource-group>"
 
