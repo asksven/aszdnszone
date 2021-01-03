@@ -9,7 +9,13 @@ In order to have this script to work you will need:
 - the SPN must have the role "DNS Zone Contributor" on the DNS zone
 
 
-## Migrate from earlier versions
+## Changelog
+
+### 2021-01-03
+
+- We don't build an own image anymore (just to put out batch-script inside) but rather use `asksven/az-cli:2` instead, and add the script with a config-map
+- Some other optimizations for the cronjob
+- fixed a bug when `REQUESTED_NAMES` is empty (for example if we want to maintain the IP for a domain with sub-domains)
 
 ### 2020-06-28
 
@@ -28,14 +34,14 @@ When the script runs it stores the last IP it has detected in `tmp/my_ip`. The n
 
 If you want to update the IP for one domain (e.g. `foo.bar`) the config-file should have:
 
-- `REQUESTED_NAMES=("")`
+- `REQUESTED_NAMES=""`
 - `PARENT_DOMAIN="foo.bar"`
 
 ### Scenario 2: update multiple FQDNs in the domain
 
 If you want to update the IP for multiple FQDNs, e.g. `home.foo.bar` and `lab.home.foo.bar` the config-file should have:
 
-- `REQUESTED_NAMES=("home" "lab.home")`
+- `REQUESTED_NAMES="home,lab.home"`
 - `PARENT_DOMAIN="foo.bar"`
  
 ## Automation
@@ -47,29 +53,20 @@ If you want to update the IP for multiple FQDNs, e.g. `home.foo.bar` and `lab.ho
 
 Pre-requisite: a `setenv` file needs to be present in the directory you run the container from, or you need to replace `$PWD` with the path of the config-file
 ```
-docker run -v $PWD:/config asksven/azdnszone:1 /bin/bash -c "/update-ip.sh config/setenv"
+docker run -e STATELESS=1 -e TWELVE_FACTORS=1 -v $PWD:/config asksven/azdnszone:5 /bin/bash -c "/update-ip.sh config/setenv"
 ```
 
-## Build container
+## Container
 
-Unfortuantely at this time (2020-06-27) there is no multi-arch azure-cli docker image available, so I decided to build one. The image containes the azure-cli v2.8.0 and can be pulled at `asksven/az-cli:1`. The repo is [here](https://github.com/asksven/azure-cli)
+Unfortuantely at this time (2020-06-27) there is no multi-arch azure-cli docker image available, so I decided to build one. The image containes the azure-cli v2.8.0 and can be pulled at `asksven/az-cli:2`. The repo is [here](https://github.com/asksven/azure-cli).
 
-To build the azdnszone image based on the cli:
-```
-{
-    export REPOSITORY=asksven/azdnszone
-    export VERSION=1
-    export DOCKER_CLI_EXPERIMENTAL=enabled
-    docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-}
-
-make
-```
 
 ## Run on Kubernetes
 
 `azdnszone` can be run on Kubernetes, as a cron-job:
 
-1. Create a namespace: `kubectl create ns azdnszone`
-1. Create a configmap: `source setenv && kubectl  -n azdnszone create configmap azdnszone-config --from-literal INITIALIZED=1 --from-literal appId=$appId --from-literal password=$password --from-literal tenant=$tenant --from-literal SUBSCRIPTION=$SUBSCRIPTION --from-literal REQUESTED_NAMES=$REQUESTED_NAMES --from-literal AZ_DNS_RG=$AZ_DNS_RG --from-literal PARENT_DOMAIN=$PARENT_DOMAIN --from-literal STATELESS=$STATELESS --from-literal TWELVE_FACTORS=$TWELVE_FACTORS`
-1. Create a cron-job: `kubectl -n azdnszone apply -f kubernetes/`
+1. Set the namespace: `export NAMESPACE=azdnszone`
+1. Create a namespace: `kubectl create ns $NAMESPACE`
+1. Create a configmap for the settings: `source setenv && kubectl  -n $NAMESPACE create configmap azdnszone-config --from-literal INITIALIZED=1 --from-literal appId=$appId --from-literal password=$password --from-literal tenant=$tenant --from-literal SUBSCRIPTION=$SUBSCRIPTION --from-literal REQUESTED_NAMES=$REQUESTED_NAMES --from-literal AZ_DNS_RG=$AZ_DNS_RG --from-literal PARENT_DOMAIN=$PARENT_DOMAIN --from-literal STATELESS=$STATELESS --from-literal TWELVE_FACTORS=$TWELVE_FACTORS`
+1. Create a configmap for the batchfile: `kubectl -n $NAMESPACE create configmap batch-config --from-file=update-ip.sh=./update-ip.sh`
+1. Create a cron-job: `kubectl -n $NAMESPACE apply -f kubernetes/`

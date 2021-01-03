@@ -3,6 +3,7 @@ kind: CronJob
 metadata:
   name: update-ip
 spec:
+  concurrencyPolicy: Forbid
   schedule: "* * * * *"
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3  
@@ -12,9 +13,20 @@ spec:
         spec:
           containers:
           - name: azdnszone
-            image: asksven/azdnszone:6
+            image: asksven/az-cli:2
             command: ["/update-ip.sh"]
             envFrom:
             - configMapRef:
                 name: azdnszone-config
+            volumeMounts:
+              - name: batch
+                mountPath: /update-ip.sh
+                subPath: update-ip.sh
           restartPolicy: Never
+          volumes:
+            - name: batch
+              configMap:
+                name: batch-config
+                defaultMode: 0777
+
+

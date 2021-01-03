@@ -50,8 +50,8 @@ if [[ -z $appId || -z $password ]]; then
     exit 1
 fi
 
-if [[ -z $REQUESTED_NAMES || -z $PARENT_DOMAIN ]]; then
-    echo "`date +%F_%R` : REQUESTED_NAMES or PARENT_DOMAIN can not be empty" >&2
+if [[ -z $REQUESTED_NAMES && -z $PARENT_DOMAIN ]]; then
+    echo "`date +%F_%R` : REQUESTED_NAMES and PARENT_DOMAIN can not be empty" >&2
     exit 1
 fi
 
@@ -78,7 +78,11 @@ readarray -td, NAMES <<<"$REQUESTED_NAMES,"; unset 'NAMES[-1]'
 # otherwise we use the state-file
 if [ "$STATELESS" == "1"  ]; then
     set -e
-    MY_OLD_IP=$(dig +short ${NAMES[0]}.${PARENT_DOMAIN})
+    if [ "$REQUESTED_NAMES" == "" ]; then
+      MY_OLD_IP=$(dig +short ${PARENT_DOMAIN})
+    else  
+      MY_OLD_IP=$(dig +short ${NAMES[0]}.${PARENT_DOMAIN})
+    fi  
     set +e
 else
     if [ -f "$IP_FILE" ]; then
