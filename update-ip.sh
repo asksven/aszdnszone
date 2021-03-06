@@ -72,6 +72,13 @@ fi
 MY_IP=$(curl -s http://whatismijnip.nl |cut -d " " -f 5)
 echo "`date +%F_%R` : Current IP is $MY_IP" >&1
 
+if [[ $MY_IP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  echo "`date +%F_%R` : call returned a valid IP address" >&1
+else
+  echo "`date +%F_%R` : call did not return a valid IP address. Aborting" >&1
+  exit 1
+fi
+
 readarray -td, NAMES <<<"$REQUESTED_NAMES,"; unset 'NAMES[-1]'
 
 # if STATELESS we use DNS to get the current stored (old) IP
@@ -97,6 +104,8 @@ if [ "$MY_IP" == "" ]; then
     echo "`date +%F_%R` : IP was empty. Aborting" >&2
     exit 1
 fi
+
+
 
 if [ "$MY_IP" != "$MY_OLD_IP" ]; then
   echo "`date +%F_%R` : IP has changed"	 >&1
