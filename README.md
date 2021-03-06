@@ -62,7 +62,7 @@ docker run -e STATELESS=1 -e TWELVE_FACTORS=1 -v $PWD:/config asksven/azdnszone:
 
 ## Container
 
-Unfortuantely at this time (2020-06-27) there is no multi-arch azure-cli docker image available, so I decided to build one. The image containes the azure-cli v2.8.0 and can be pulled at `asksven/az-cli:3`. The repo is [here](https://github.com/asksven/azure-cli).
+Unfortuantely at this time (2020-06-27) there is no multi-arch azure-cli docker image available, so I decided to build one. The image containes the azure-cli v2.8.0 and can be pulled at `asksven/az-cli:2`. The repo is [here](https://github.com/asksven/azure-cli).
 
 
 ## Run on Kubernetes

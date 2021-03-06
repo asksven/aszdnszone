@@ -14,7 +14,7 @@ spec:
         spec:
           containers:
           - name: azdnszone
-            image: asksven/az-cli:3
+            image: asksven/az-cli:2
             command: ["/update-ip.sh"]
             envFrom:
             - configMapRef:
