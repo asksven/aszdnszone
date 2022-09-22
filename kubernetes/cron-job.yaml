@@ -1,33 +1,35 @@
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: update-ip
 spec:
   concurrencyPolicy: Forbid
-  schedule: "* * * * *"
-  startingDeadlineSeconds: 300
-  successfulJobsHistoryLimit: 1
-  failedJobsHistoryLimit: 1  
+  failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
       template:
         spec:
           containers:
-          - name: azdnszone
-            image: asksven/az-cli:2
-            command: ["/update-ip.sh"]
+          - command:
+            - /update-ip.sh
             envFrom:
             - configMapRef:
                 name: azdnszone-config
+            image: asksven/az-cli:2
+            imagePullPolicy: IfNotPresent
+            name: azdnszone
+            resources: {}
             volumeMounts:
-              - name: batch
-                mountPath: /update-ip.sh
-                subPath: update-ip.sh
+            - mountPath: /update-ip.sh
+              name: batch
+              subPath: update-ip.sh
           restartPolicy: Never
           volumes:
-            - name: batch
-              configMap:
-                name: batch-config
-                defaultMode: 0777
-
-
+          - configMap:
+              defaultMode: 511
+              name: batch-config
+            name: batch
+  schedule: '* * * * *'
+  startingDeadlineSeconds: 300
+  successfulJobsHistoryLimit: 1
+  suspend: false
