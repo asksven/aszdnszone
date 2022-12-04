@@ -57,7 +57,7 @@ If you want to update the IP for multiple FQDNs, e.g. `home.foo.bar` and `lab.ho
 
 Pre-requisite: a `setenv` file needs to be present in the directory you run the container from, or you need to replace `$PWD` with the path of the config-file
 ```
-docker run -e STATELESS=1 -e TWELVE_FACTORS=1 -v $PWD:/config asksven/azdnszone:5 /bin/bash -c "/update-ip.sh config/setenv"
+docker run -e STATELESS=1 -e TWELVE_FACTORS=1 -v $PWD:/config asksven/azdnszone:5 /bin/bash -c "/update-ip.sh /config/setenv"
 ```
 
 ## Container
